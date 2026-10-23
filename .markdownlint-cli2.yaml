@@ -1,0 +1,34 @@
+globs:
+  - "**/*.md"
+  - "**/*.markdown"
+
+ignores:
+  # 版本管理与依赖
+  - "**/.git/**"
+  - "**/node_modules/**"
+  - "**/vendor/**"
+  - "**/.venv/**"
+  - "**/venv/**"
+  # 构建与验证产物
+  - "**/build/**"
+  - "**/dist/**"
+  - "**/out/**"
+  - "**/target/**"
+  - "**/coverage/**"
+  # 工具与框架缓存
+  - "**/.cache/**"
+  - "**/.next/**"
+  - "**/.nuxt/**"
+  - "**/.output/**"
+  - "**/.pytest_cache/**"
+  - "**/.ruff_cache/**"
+
+config:
+  MD013: false
+
+overrides:
+  - filter:
+      - ".github/pull_request_template.md"
+    config:
+      MD041: false
+    combine: merge

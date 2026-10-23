@@ -1,0 +1,44 @@
+name: Documentation
+
+on:
+  push:
+    branches:
+      - '**'
+    paths:
+      - '**/*.md'
+      - '**/*.markdown'
+      - 'docs/**'
+      - '**/.markdownlint*'
+      - '.github/check-docs/**'
+      - '.github/workflows/docs.yml'
+  pull_request:
+    paths:
+      - '**/*.md'
+      - '**/*.markdown'
+      - 'docs/**'
+      - '**/.markdownlint*'
+      - '.github/check-docs/**'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  docs:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v7
+      - uses: DavidAnson/markdownlint-cli2-action@main
+      - name: Check documentation
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const { checkDocs } = await import(`${process.env.GITHUB_WORKSPACE}/.github/check-docs/check-docs.mjs`);
+            const { count, errors, warnings } = checkDocs(process.env.GITHUB_WORKSPACE);
+            for (const warning of warnings) core.warning(warning);
+            if (errors.length > 0) {
+              core.setFailed(errors.join('\n'));
+            } else {
+              core.info(`文档检查通过：${count} 个 Markdown 文件`);
+            }
